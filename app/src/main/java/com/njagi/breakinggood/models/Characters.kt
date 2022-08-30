@@ -1,4 +1,6 @@
 package com.njagi.breakinggood.models
 
 
-class Characters : ArrayList<CharacterItem>()
+import com.google.gson.annotations.SerializedName
+
+class Characters : ArrayList<CharactersItem>()

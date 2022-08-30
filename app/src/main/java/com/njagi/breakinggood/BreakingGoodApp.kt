@@ -1,4 +1,7 @@
 package com.njagi.breakinggood
 
-class BreakingGoodApp {
-}
+import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
+
+@HiltAndroidApp
+class BreakingGoodApp : Application()
