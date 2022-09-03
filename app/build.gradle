@@ -77,11 +77,13 @@ dependencies {
 
     //dagger-hilt
     implementation "com.google.dagger:hilt-android:2.41"
+    implementation 'com.android.volley:volley:1.2.1'
     kapt "com.google.dagger:hilt-android-compiler:2.41"
     kapt "androidx.hilt:hilt-compiler:1.0.0"
 
-    //coil
-    implementation("io.coil-kt:coil-compose:1.4.0")
+    //coil image library
+    implementation("io.coil-kt:coil-compose:2.2.0")
+
 
     //moshi
     implementation("com.squareup.moshi:moshi-kotlin:1.13.0")

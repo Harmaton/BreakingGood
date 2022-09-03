@@ -1,5 +1,6 @@
 package com.njagi.breakinggood.viewmodels
 
+import com.njagi.breakinggood.models.Characters
 import com.njagi.breakinggood.models.CharactersItem
 
 sealed class CharacterState{
