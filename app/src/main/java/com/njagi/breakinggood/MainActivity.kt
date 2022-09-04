@@ -1,4 +1,4 @@
-@file:Suppress("OPT_IN_IS_NOT_ENABLED")
+
 
 package com.njagi.breakinggood
 
@@ -46,8 +46,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             BreakingGoodTheme {
+                Surface(modifier = Modifier.fillMaxSize().padding(4.dp)) {
                     AppHead()
+                    ChipSelect()
                     FetchData()
+                }
+
             }
         }
     }
@@ -57,6 +61,7 @@ class MainActivity : ComponentActivity() {
 fun FetchData(
     characterViewModel: CharacterViewModel = viewModel()
 ) {
+
     Column(modifier = Modifier.fillMaxSize()) {
         when (val state = characterViewModel.characterstate.collectAsState().value) {
             is CharacterState.Empty -> Text(text = "Nothing to see",
@@ -65,7 +70,7 @@ fun FetchData(
                     .padding(16.dp),
                 color = Color.Red)
 
-            is CharacterState.Loading -> Text(text = "Loading....loading anim coming")
+            is CharacterState.Loading -> Loading(text = "Characters Loading ...")
 
             is CharacterState.Success -> BadCharacters(characters = state.data)
 
@@ -77,6 +82,8 @@ fun FetchData(
                 color = Color.Red
             )
         }
+
+
     }
 }
 
@@ -91,27 +98,30 @@ fun AppHead() {
         verticalAlignment = Alignment.Top
     ) {
 
-        IconButton(onClick = { /*TODO*/ }) {
-            Icon(
-                imageVector = Icons.Default.Send,
-                contentDescription = "buy me a coffee",
-                tint = Color.Blue
-            )
-        }
 
         Text(
-            text = "Breaking Saul ",
+            text = "Breaking Good",
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.paddingFromBaseline(top = 20.dp),
+            modifier = Modifier.paddingFromBaseline(top = 20.dp).size(8.dp),
             fontStyle = FontStyle.Italic,
-            fontSize = 26.sp,
-            textAlign = TextAlign.Center)
+            fontSize = 28.sp,
+            textAlign = TextAlign.Center,
+            softWrap = true,
+            style = MaterialTheme.typography.h4
+            )
 
         IconButton(onClick = { /*TODO*/ }) {
             Icon(
-                imageVector = Icons.Default.Search,
+                imageVector = Icons.Default.Favorite,
                 contentDescription = "refresh",
-                tint = Color.Blue
+                tint = Color.Red
+            )
+        }
+        IconButton(onClick = {  }) {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = "Quotes",
+                tint = Color.Black
             )
         }
     }
@@ -128,10 +138,10 @@ fun ChipSelect() {
 
     ) {
         Chip(onClick = { /*TODO*/ }, enabled = true) {
-            Text(text = "Breaking Bad", fontWeight = FontWeight.Black)
+            Text(text = "Characters", fontWeight = FontWeight.Black)
         }
         Chip(onClick = { /*TODO*/ }) {
-            Text(text = "Better Call Saul", fontWeight = FontWeight.Black)
+            Text(text = "Quotes", fontWeight = FontWeight.Black)
         }
         Chip(onClick = { /*TODO*/ }) {
             Text(text = "Deaths", fontWeight = FontWeight.Black)
@@ -140,16 +150,44 @@ fun ChipSelect() {
 }
 
 @Composable
+fun Loading(text:String){
+
+    Column(modifier = Modifier.padding(50.dp)) {
+        Row(modifier = Modifier
+            .fillMaxSize()
+            .padding(15.dp), verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceAround){
+
+            Icon(imageVector = Icons.Default.Refresh,
+                contentDescription = "Loading",
+                tint = Color.Blue,
+                modifier = Modifier.padding(20.dp).fillMaxSize().size(3.dp)
+            )
+
+                Text(text = text,
+                    modifier = Modifier
+                        .align(CenterVertically)
+                        .padding(15.dp).fillMaxSize()
+                )
+
+        }
+
+    }
+}
+
+@Composable
 fun BadCharacters(characters: ArrayList<CharactersItem>) {
     val state1 = rememberLazyGridState(0)
-    Column(modifier = Modifier.padding(top = 80.dp)) {
+    Column(modifier = Modifier.padding(top = 100.dp)) {
         Text(
-            text = "Breaking Bad Characters",
-            fontWeight = FontWeight.Thin,
-            modifier = Modifier.padding(top = 15.dp),
-            textAlign = TextAlign.Justify)
+            text = "Characters",
+            fontWeight = FontWeight.Normal,
+            modifier = Modifier.padding(20.dp),
+            textAlign = TextAlign.Center,
+        softWrap = true,
+        style = MaterialTheme.typography.h5)
         Box(modifier = Modifier
-            .padding(16.dp)
+            .padding(8.dp)
             .fillMaxSize()) {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
@@ -170,18 +208,18 @@ fun ItemDisplay(charactersItem: CharactersItem) {
     // character item
 
     Card(elevation = 2.dp,
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(8.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .height(170.dp)
+            .height(200.dp)
             .background(Color.White)
             .clickable { }
             .padding(4.dp)
     ) {
         Column(
             modifier = Modifier
-                .padding(start = 16.dp, end = 16.dp),
-            horizontalAlignment = Alignment.Start,
+                .padding(start = 10.dp, end = 10.dp),
+            horizontalAlignment = Alignment.Start
         ) {
             Image(painter = rememberAsyncImagePainter(
                 ImageRequest.Builder(LocalContext.current)
@@ -193,15 +231,15 @@ fun ItemDisplay(charactersItem: CharactersItem) {
 
             ), contentDescription = null,
                 modifier = Modifier
-                .width(100.dp)
-                .height(100.dp)
-                .align(CenterHorizontally),
-                contentScale = ContentScale.Inside)
+                    .width(100.dp)
+                    .height(100.dp)
+                    .align(CenterHorizontally),
+                contentScale = ContentScale.FillWidth)
 
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = charactersItem.status,
+                text = charactersItem.portrayed,
                 maxLines = 1,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Light
@@ -210,30 +248,81 @@ fun ItemDisplay(charactersItem: CharactersItem) {
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
-                text = charactersItem.category,
+                text = charactersItem.nickname,
                 maxLines = 1,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.ExtraLight
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Light
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Row(
-                modifier = Modifier,
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.Bottom,
-            ) {
-                
-                Icon(imageVector = Icons.Default.FavoriteBorder,
-                    tint = Color.Blue,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(18.dp)
-                        .align(CenterVertically))
-            }
+
+            Text(
+                text = charactersItem.status,
+                maxLines = 1,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Light
+            )
+
         }
     }
 }
+//Death Details
+//@Composable
+//fun Deaths(deaths: ArrayList<DeathsItem>){
+//
+//    Column(modifier = Modifier
+//        .fillMaxSize()
+//        .padding(10.dp)) {
+//        Text(
+//            text = "Deaths",
+//            fontWeight = FontWeight.Normal,
+//            modifier = Modifier.padding(10.dp),
+//            textAlign = TextAlign.Start)
+//        Box(modifier = Modifier
+//            .padding(8.dp)
+//            .fillMaxSize()) {
+//        LazyRow(modifier = Modifier.fillMaxSize(),
+//        userScrollEnabled = true,
+//        horizontalArrangement = Arrangement.SpaceEvenly,
+//        verticalAlignment = CenterVertically)
+//        {
+//
+//            items(deaths.size) {
+//                DeathCard(death = deaths[it])
+//            }
+//        }
+//        }
+//    }
+//
+//}
+//
+//@Composable
+//fun DeathCard(death: DeathsItem) {
+//    Card(modifier = Modifier.fillMaxSize()) {
+//            Row(modifier = Modifier
+//                .fillMaxSize()
+//                .padding(10.dp)) {
+//                Column(modifier = Modifier
+//                    .fillMaxSize()
+//                    .padding(10.dp)
+//                    .background(color = Color.LightGray)) {
+//                    Text(text = death.death)
+//                    Spacer(modifier = Modifier.padding(4.dp))
+//                    Text(text = death.responsible)
+//
+//                }
+//               Column(modifier = Modifier
+//                   .fillMaxSize()
+//                   .padding(10.dp)) {
+//                   Text(text = death.lastWords)
+//                   Spacer(modifier = Modifier.padding(4.dp))
+//                   Text(text = death.cause)
+//               }
+//        }
+//    }
+//
+//}
 
 
 @Preview(showBackground = true)
