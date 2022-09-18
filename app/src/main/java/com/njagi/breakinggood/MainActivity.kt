@@ -18,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -28,6 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,6 +38,7 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.njagi.breakinggood.models.CharactersItem
 import com.njagi.breakinggood.ui.theme.BreakingGoodTheme
+import com.njagi.breakinggood.ui.theme.Shapes
 import com.njagi.breakinggood.viewmodels.CharacterState
 import com.njagi.breakinggood.viewmodels.CharacterViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -46,11 +49,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             BreakingGoodTheme {
-                Surface(modifier = Modifier.fillMaxSize().padding(4.dp)) {
+
                     AppHead()
                     ChipSelect()
                     FetchData()
-                }
+
 
             }
         }
@@ -64,23 +67,13 @@ fun FetchData(
 
     Column(modifier = Modifier.fillMaxSize()) {
         when (val state = characterViewModel.characterstate.collectAsState().value) {
-            is CharacterState.Empty -> Text(text = "Nothing to see",
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .padding(16.dp),
-                color = Color.Red)
+            is CharacterState.Empty -> Text(text="Nothing to see here")
 
-            is CharacterState.Loading -> Loading(text = "Characters Loading ...")
+            is CharacterState.Loading -> Loading(text = "Relax, Loading ...")
 
             is CharacterState.Success -> BadCharacters(characters = state.data)
 
-            is CharacterState.Error -> Text(
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .padding(16.dp),
-                text = state.message,
-                color = Color.Red
-            )
+            is CharacterState.Error -> Error(text = state.message)
         }
 
 
@@ -93,34 +86,33 @@ fun AppHead() {
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .padding(10.dp),
+            .padding(20.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.Top
     ) {
-
-
         Text(
             text = "Breaking Good",
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.paddingFromBaseline(top = 20.dp).size(8.dp),
             fontStyle = FontStyle.Italic,
-            fontSize = 28.sp,
             textAlign = TextAlign.Center,
             softWrap = true,
-            style = MaterialTheme.typography.h4
-            )
+            textDecoration = TextDecoration.LineThrough,
+            modifier = Modifier.padding(12.dp),
+            fontSize = 20.sp
+        )
 
         IconButton(onClick = { /*TODO*/ }) {
             Icon(
                 imageVector = Icons.Default.Favorite,
                 contentDescription = "refresh",
-                tint = Color.Red
+                tint = MaterialTheme.colors.
             )
         }
+
         IconButton(onClick = {  }) {
             Icon(
-                imageVector = Icons.Default.Search,
-                contentDescription = "Quotes",
+                imageVector = Icons.Default.ArrowForward,
+                contentDescription = "Settings",
                 tint = Color.Black
             )
         }
@@ -130,6 +122,8 @@ fun AppHead() {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ChipSelect() {
+    
+
     Row(
         modifier = Modifier
             .fillMaxSize()
@@ -137,14 +131,17 @@ fun ChipSelect() {
         horizontalArrangement = Arrangement.SpaceAround
 
     ) {
-        Chip(onClick = { /*TODO*/ }, enabled = true) {
-            Text(text = "Characters", fontWeight = FontWeight.Black)
+
+        Chip(onClick = { /*TODO*/ },
+            enabled = true,
+        shape = Shapes.medium) {
+            Text(text = "Characters", fontWeight = FontWeight.Normal)
         }
-        Chip(onClick = { /*TODO*/ }) {
-            Text(text = "Quotes", fontWeight = FontWeight.Black)
+        Chip(onClick = { /*TODO*/ }, shape = Shapes.medium) {
+            Text(text = "Quotes", fontWeight = FontWeight.Normal,)
         }
-        Chip(onClick = { /*TODO*/ }) {
-            Text(text = "Deaths", fontWeight = FontWeight.Black)
+        Chip(onClick = { /*TODO*/ }, shape = Shapes.medium) {
+            Text(text = "Deaths", fontWeight = FontWeight.Normal)
         }
     }
 }
@@ -155,20 +152,56 @@ fun Loading(text:String){
     Column(modifier = Modifier.padding(50.dp)) {
         Row(modifier = Modifier
             .fillMaxSize()
-            .padding(15.dp), verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceAround){
+            .padding(25.dp), verticalAlignment = CenterVertically,
+            horizontalArrangement = Arrangement.Center){
 
             Icon(imageVector = Icons.Default.Refresh,
                 contentDescription = "Loading",
-                tint = Color.Blue,
-                modifier = Modifier.padding(20.dp).fillMaxSize().size(3.dp)
+                tint = Color.Red,
+                modifier = Modifier
+                    .padding(20.dp)
+                    .fillMaxSize()
+                    .size(7.dp)
             )
 
                 Text(text = text,
                     modifier = Modifier
                         .align(CenterVertically)
-                        .padding(15.dp).fillMaxSize()
+                        .padding(15.dp)
+                        .fillMaxSize()
+                        .size(6.dp)
                 )
+
+        }
+
+    }
+}
+
+@Composable
+fun Error(text:String){
+
+    Column(modifier = Modifier.padding(50.dp)) {
+        Row(modifier = Modifier
+            .fillMaxSize()
+            .padding(15.dp), verticalAlignment = CenterVertically,
+            horizontalArrangement = Arrangement.SpaceAround){
+
+            Icon(imageVector = Icons.Default.Info,
+                contentDescription = "Error",
+                tint = Color.Blue,
+                modifier = Modifier
+                    .padding(20.dp)
+                    .fillMaxSize()
+                    .size(4.dp)
+            )
+
+            Text(
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .padding(16.dp),
+                text = text,
+                color = Color.Red
+            )
 
         }
 
@@ -182,12 +215,12 @@ fun BadCharacters(characters: ArrayList<CharactersItem>) {
         Text(
             text = "Characters",
             fontWeight = FontWeight.Normal,
-            modifier = Modifier.padding(20.dp),
+            modifier = Modifier.padding(12.dp),
             textAlign = TextAlign.Center,
         softWrap = true,
         style = MaterialTheme.typography.h5)
         Box(modifier = Modifier
-            .padding(8.dp)
+            .padding(4.dp)
             .fillMaxSize()) {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
@@ -226,7 +259,6 @@ fun ItemDisplay(charactersItem: CharactersItem) {
                     .data(data = charactersItem.img)
                     .apply (block = fun ImageRequest.Builder.() {
                         placeholder(coil.base.R.drawable.notification_template_icon_bg)
-                        crossfade(true)
                     }).build()
 
             ), contentDescription = null,
@@ -267,6 +299,8 @@ fun ItemDisplay(charactersItem: CharactersItem) {
         }
     }
 }
+//@Composable
+//fun
 //Death Details
 //@Composable
 //fun Deaths(deaths: ArrayList<DeathsItem>){
@@ -323,6 +357,8 @@ fun ItemDisplay(charactersItem: CharactersItem) {
 //    }
 //
 //}
+
+
 
 
 @Preview(showBackground = true)
