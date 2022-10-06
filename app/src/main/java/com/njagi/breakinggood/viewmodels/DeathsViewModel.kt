@@ -18,7 +18,7 @@ class DeathsViewModel @Inject constructor(private val deathsRepository: DeathsRe
     val deathState: StateFlow<DeathState> = _deathstate
 
     init {
-
+     getAllDeaths()
     }
 
     private fun getAllDeaths(){

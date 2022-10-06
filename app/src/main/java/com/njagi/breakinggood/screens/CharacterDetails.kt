@@ -1,4 +1,10 @@
 package com.njagi.breakinggood.screens
 
-class CharacterDetails {
+import androidx.compose.runtime.Composable
+
+@Composable
+fun CharacterDetails(
+
+) {
+
 }

@@ -90,6 +90,18 @@ dependencies {
     kapt "com.squareup.moshi:moshi-kotlin-codegen:1.13.0"
 
 
+    // splash api
+    implementation('androidx.core:core-splashscreen:1.0.0')
+
+    // pager and indicator - accompanist
+    def accompanist_version ="0.15.0"
+    implementation("com.google.accompanist:accompanist-pager:$accompanist_version")
+    implementation("com.google.accompanist:accompanist-pager-indicators:$accompanist_version")
+
+    // navigation component
+    def nav_version = "2.5.1"
+    implementation("androidx.navigation:navigation-compose:$nav_version")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
 
     testImplementation 'junit:junit:4.13.2'

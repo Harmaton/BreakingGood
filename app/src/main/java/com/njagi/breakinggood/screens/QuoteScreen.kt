@@ -1,4 +1,8 @@
 package com.njagi.breakinggood.screens
 
-class QuoteScreen {
+import androidx.compose.runtime.Composable
+
+@Composable
+fun QuoteScreen() {
+
 }
