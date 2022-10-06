@@ -4,4 +4,12 @@
     <style name="Theme.BreakingGood" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:statusBarColor">@color/purple_700</item>
     </style>
+
+    <style name="Theme.CustomSplashScreen" parent="Theme.SplashScreen">
+        <item name="postSplashScreenTheme">@style/Theme.BreakingGood</item>
+        <item name="windowSplashScreenAnimationDuration">3000</item>
+        <item name="windowSplashScreenBackground">@color/purple_700</item>
+        <item name="windowSplashScreenIconBackgroundColor">@color/purple_700</item>
+        <item name="android:icon">@drawable/icon</item>
+    </style>
 </resources>
