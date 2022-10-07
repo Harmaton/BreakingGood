@@ -17,10 +17,34 @@ class DeathsViewModel @Inject constructor(private val deathsRepository: DeathsRe
     private var _deathstate = MutableStateFlow<DeathState>(DeathState.Empty)
     val deathState: StateFlow<DeathState> = _deathstate
 
+    private var _randomdeathstate = MutableStateFlow<DeathState>(DeathState.Empty)
+    val randomdeathstate: StateFlow<DeathState> = _randomdeathstate
+
     init {
      getAllDeaths()
+
+        getRandomDeath()
     }
 
+    private fun getRandomDeath() {
+        _randomdeathstate.value = DeathState.Loading
+
+        viewModelScope.launch(Dispatchers.IO) {
+            val randomDeathResponse = deathsRepository.getRandomDeath()
+
+            try {
+                _randomdeathstate.value = DeathState.Success2(randomDeathResponse)
+            }
+            catch (e: IOException){
+                _deathstate.value = DeathState.Error("Gotta Be a Problem (; ")
+            }
+            catch (e: HttpException){
+                _deathstate.value = DeathState.Error("No Network Connection ")
+            }
+
+        }
+
+    }
     private fun getAllDeaths(){
         _deathstate.value = DeathState.Loading
 

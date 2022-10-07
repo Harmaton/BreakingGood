@@ -24,13 +24,13 @@ import com.njagi.breakinggood.viewmodels.DeathsViewModel
 
 @Composable
 fun DeathScreen(deathsViewModel: DeathsViewModel = viewModel()) {
-    Column(modifier = Modifier.fillMaxSize()) {
+        Row(modifier = Modifier.fillMaxWidth().height(160.dp)) {
         
         when (val state = deathsViewModel.deathState.collectAsState().value) {
             
             is DeathState.Empty -> Text(text="Nothing to see here")
 
-            is DeathState.Loading -> Loading(text = "Relax, Loading ...")
+            is DeathState.Loading -> Loading(text = "Loading ...")
 
             is DeathState.Success -> Deaths(deaths = state.data)
 
@@ -71,7 +71,7 @@ fun Deaths(deaths: ArrayList<DeathsItem>){
 
 @Composable
 fun DeathCard(death: DeathsItem) {
-    Card(modifier = Modifier.fillMaxSize()) {
+    Card(modifier = Modifier.width(150.dp).height(150.dp)) {
             Row(modifier = Modifier
                 .fillMaxSize()
                 .padding(10.dp)) {

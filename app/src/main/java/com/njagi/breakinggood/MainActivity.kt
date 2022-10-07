@@ -3,9 +3,7 @@ package com.njagi.breakinggood
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -35,11 +33,16 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import com.njagi.breakinggood.common.HeaderText
 import com.njagi.breakinggood.models.CharactersItem
+import com.njagi.breakinggood.models.DeathsItem
+import com.njagi.breakinggood.screens.DeathScreen
 import com.njagi.breakinggood.ui.theme.BreakingGoodTheme
 import com.njagi.breakinggood.ui.theme.Shapes
 import com.njagi.breakinggood.viewmodels.CharacterState
 import com.njagi.breakinggood.viewmodels.CharacterViewModel
+import com.njagi.breakinggood.viewmodels.DeathState
+import com.njagi.breakinggood.viewmodels.DeathsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -51,8 +54,13 @@ class MainActivity : ComponentActivity() {
             BreakingGoodTheme {
 
                 Scaffold(topBar = { AppHead() }) { paddingValues ->
-                    ChipSelect()
-                    FetchData(modifier = Modifier.padding(paddingValues))
+
+                    Column(modifier = Modifier.padding(paddingValues)) {
+                        HeaderText(text = "Random Death")
+                        FetchDeath()
+                        HeaderText(text = "Characters")
+                        FetchData(modifier = Modifier.padding(top = 2.dp))
+                    }
 
                 }
             }
@@ -64,8 +72,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun FetchData(
     characterViewModel: CharacterViewModel = viewModel(),
-    modifier: Modifier
-
+   modifier: Modifier
 ) {
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -81,6 +88,28 @@ fun FetchData(
 
 
     }
+}
+
+@Composable
+fun FetchDeath(
+    deathsViewModel: DeathsViewModel = viewModel()
+) {
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .padding(8.dp)
+        .height(120.dp)) {
+       when(val state = deathsViewModel.randomdeathstate.collectAsState().value) {
+           is DeathState.Empty -> Text(text = "Nothing to see here")
+
+           is DeathState.Loading -> Loading(text = "Relax, Loading ...")
+
+           is DeathState.Success2 -> RandomDeathCard(deathsItem = state.data)
+
+           is DeathState.Error -> Text(text = state.message)
+
+       }
+    }
+
 }
 
 @Composable
@@ -132,7 +161,8 @@ fun AppHead() {
 fun ChipSelect() {
     Row(
         modifier = Modifier
-            .fillMaxWidth().padding(bottom = 10.dp),
+            .fillMaxWidth()
+            .padding(bottom = 10.dp),
         horizontalArrangement = Arrangement.SpaceAround,
 
 
@@ -207,11 +237,9 @@ fun Error(text: String) {
 @Composable
 fun BadCharacters(characters: ArrayList<CharactersItem>) {
     val state1 = rememberLazyGridState(0)
-    Column(modifier = Modifier.padding(top = 60.dp)) {
-
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
-            contentPadding = PaddingValues(16.dp),
+            contentPadding = PaddingValues(12.dp),
             state = state1
         ) {
             items(characters.size) {
@@ -219,7 +247,7 @@ fun BadCharacters(characters: ArrayList<CharactersItem>) {
             }
         }
     }
-}
+
 
 @Composable
 fun ItemDisplay(charactersItem: CharactersItem) {
@@ -292,6 +320,34 @@ fun ItemDisplay(charactersItem: CharactersItem) {
 
         }
     }
+}
+
+@Composable
+fun RandomDeathCard(deathsItem: DeathsItem ) {
+    Card(modifier = Modifier
+        .fillMaxWidth()
+        .height(100.dp), shape = RoundedCornerShape(10.dp),
+        backgroundColor = Color.LightGray,
+        border = BorderStroke(1.dp, Color.Cyan)
+    ) {
+
+        Row(modifier = Modifier.fillMaxSize(0.8f)){
+            Column(modifier = Modifier.padding(4.dp)) {
+                Text(text = deathsItem.death,fontSize = 15.sp)
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(text = "lastwords"+":"+""+deathsItem.lastWords,fontSize = 15.sp)
+            }
+            Spacer(modifier = Modifier.width(30.dp))
+            Column(modifier = Modifier.padding(4.dp)) {
+                Text(text = "cause"+":"+deathsItem.cause,fontSize = 15.sp)
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(text = "by"+":"+deathsItem.responsible, fontSize = 15.sp)
+            }
+
+    }
+}
+
+
 }
 
 @Preview(showBackground = true)
