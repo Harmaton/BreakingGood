@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.BreakingGood" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:statusBarColor">@color/purple_700</item>
+    <style name="Theme.BreakingGood" parent="android:ThemeOverlay.Material.Dark">
     </style>
 
     <style name="Theme.CustomSplashScreen" parent="Theme.SplashScreen">
@@ -10,6 +9,6 @@
         <item name="windowSplashScreenAnimationDuration">3000</item>
         <item name="windowSplashScreenBackground">@color/purple_700</item>
         <item name="windowSplashScreenIconBackgroundColor">@color/purple_700</item>
-        <item name="android:icon">@drawable/icon</item>
+        <item name="windowSplashScreenAnimatedIcon"> @drawable/ic_baseline_bubble_chart_24</item>
     </style>
 </resources>

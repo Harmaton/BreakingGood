@@ -13,7 +13,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.rounded.Notifications
-import androidx.compose.material.icons.rounded.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -36,9 +35,7 @@ import coil.request.ImageRequest
 import com.njagi.breakinggood.common.HeaderText
 import com.njagi.breakinggood.models.CharactersItem
 import com.njagi.breakinggood.models.DeathsItem
-import com.njagi.breakinggood.screens.DeathScreen
 import com.njagi.breakinggood.ui.theme.BreakingGoodTheme
-import com.njagi.breakinggood.ui.theme.Shapes
 import com.njagi.breakinggood.viewmodels.CharacterState
 import com.njagi.breakinggood.viewmodels.CharacterViewModel
 import com.njagi.breakinggood.viewmodels.DeathState
@@ -55,7 +52,8 @@ class MainActivity : ComponentActivity() {
 
                 Scaffold(topBar = { AppHead() }) { paddingValues ->
 
-                    Column(modifier = Modifier.padding(paddingValues)) {
+                    Column(modifier = Modifier.padding(paddingValues)
+                        ) {
                         HeaderText(text = "Random Death")
                         FetchDeath()
                         HeaderText(text = "Characters")
@@ -96,9 +94,11 @@ fun FetchDeath(
 ) {
     Row(modifier = Modifier
         .fillMaxWidth()
-        .padding(8.dp)
-        .height(120.dp)) {
+        .padding(1.dp)
+        .height(180.dp)) {
+
        when(val state = deathsViewModel.randomdeathstate.collectAsState().value) {
+
            is DeathState.Empty -> Text(text = "Nothing to see here")
 
            is DeathState.Loading -> Loading(text = "Relax, Loading ...")
@@ -107,6 +107,9 @@ fun FetchDeath(
 
            is DeathState.Error -> Text(text = state.message)
 
+           else -> {
+               Text(text = "No viewModel")
+           }
        }
     }
 
@@ -116,7 +119,8 @@ fun FetchDeath(
 fun AppHead() {
 
     TopAppBar(
-        contentPadding = PaddingValues(10.dp)
+        contentPadding = PaddingValues(10.dp),
+        backgroundColor = Color.Transparent
     )
     {
 
@@ -155,35 +159,7 @@ fun AppHead() {
     }
 }
 
-@Suppress("OPT_IN_IS_NOT_ENABLED")
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun ChipSelect() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 10.dp),
-        horizontalArrangement = Arrangement.SpaceAround,
 
-
-    ) {
-
-        Chip(
-            onClick = { /*TODO*/ },
-            enabled = true,
-            shape = Shapes.medium,
-            leadingIcon = {Icons.Default.Face}
-        ) {
-            Text(text = "Characters", fontWeight = FontWeight.Normal)
-        }
-        Chip(onClick = { /*TODO*/ }, shape = Shapes.medium, leadingIcon = {Icons.Default.FavoriteBorder}) {
-            Text(text = "Quotes", fontWeight = FontWeight.Normal)
-        }
-        Chip(onClick = { }, shape = Shapes.medium, leadingIcon = {Icons.Default.Clear}) {
-            Text(text = "Deaths", fontWeight = FontWeight.Normal)
-        }
-    }
-}
 
 @Composable
 fun Loading(text: String) {
@@ -236,7 +212,9 @@ fun Error(text: String) {
 
 @Composable
 fun BadCharacters(characters: ArrayList<CharactersItem>) {
+
     val state1 = rememberLazyGridState(0)
+
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             contentPadding = PaddingValues(12.dp),
@@ -256,10 +234,11 @@ fun ItemDisplay(charactersItem: CharactersItem) {
         shape = RoundedCornerShape(8.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp)
+            .height(210.dp)
             .background(Color.White)
             .clickable { }
-            .padding(4.dp)
+            .padding(4.dp),
+        border = BorderStroke(1.dp, color = Color.Gray)
     ) {
         Column(
             modifier = Modifier
@@ -326,22 +305,45 @@ fun ItemDisplay(charactersItem: CharactersItem) {
 fun RandomDeathCard(deathsItem: DeathsItem ) {
     Card(modifier = Modifier
         .fillMaxWidth()
-        .height(100.dp), shape = RoundedCornerShape(10.dp),
+        .height(180.dp), shape = RoundedCornerShape(10.dp),
         backgroundColor = Color.LightGray,
         border = BorderStroke(1.dp, Color.Cyan)
     ) {
 
-        Row(modifier = Modifier.fillMaxSize(0.8f)){
+
+        Image(
+            painter = rememberAsyncImagePainter(
+                ImageRequest.Builder(LocalContext.current)
+                    .data(data = deathsItem.img)
+                    .apply(block = fun ImageRequest.Builder.() {
+                        placeholder(coil.base.R.drawable.notification_template_icon_bg)
+                    }).build()
+
+            ), contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.FillBounds
+
+
+
+        )
+
+        Row(modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.Bottom
+        ){
             Column(modifier = Modifier.padding(4.dp)) {
-                Text(text = deathsItem.death,fontSize = 15.sp)
-                Spacer(modifier = Modifier.height(10.dp))
-                Text(text = "lastwords"+":"+""+deathsItem.lastWords,fontSize = 15.sp)
+
+                    Text(text = deathsItem.death,fontSize = 15.sp, color = Color.Red, fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(text = "lastwords:"+" "+" "+deathsItem.lastWords,fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.Red,
+                        fontStyle = FontStyle.Italic)
             }
-            Spacer(modifier = Modifier.width(30.dp))
+
             Column(modifier = Modifier.padding(4.dp)) {
-                Text(text = "cause"+":"+deathsItem.cause,fontSize = 15.sp)
+                Text(text = deathsItem.cause,fontSize = 14.sp, color = Color.Red, fontWeight = FontWeight.SemiBold)
                 Spacer(modifier = Modifier.height(10.dp))
-                Text(text = "by"+":"+deathsItem.responsible, fontSize = 15.sp)
+                Text(text = "Responsible:"+" "+deathsItem.responsible, fontSize = 12.sp, color = Color.Red,fontWeight = FontWeight.SemiBold,
+                    fontStyle = FontStyle.Italic )
             }
 
     }
@@ -355,6 +357,5 @@ fun RandomDeathCard(deathsItem: DeathsItem ) {
 fun DefaultPreview() {
     BreakingGoodTheme {
         AppHead()
-        ChipSelect()
     }
 }
