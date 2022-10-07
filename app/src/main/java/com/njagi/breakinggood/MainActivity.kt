@@ -213,12 +213,12 @@ fun Error(text: String) {
 @Composable
 fun BadCharacters(characters: ArrayList<CharactersItem>) {
 
-    val state1 = rememberLazyGridState(0)
+//    val state1 = rememberLazyGridState(0)
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             contentPadding = PaddingValues(12.dp),
-            state = state1
+//            state = state1
         ) {
             items(characters.size) {
                 ItemDisplay(charactersItem = characters[it])
@@ -258,7 +258,7 @@ fun ItemDisplay(charactersItem: CharactersItem) {
                     .width(120.dp)
                     .height(120.dp)
                     .align(CenterHorizontally),
-                contentScale = ContentScale.FillWidth
+                contentScale = ContentScale.Fit
             )
 
             Spacer(modifier = Modifier.height(4.dp))
