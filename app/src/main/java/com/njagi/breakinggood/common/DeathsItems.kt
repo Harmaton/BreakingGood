@@ -1,4 +1,4 @@
-package com.njagi.breakinggood.screens
+package com.njagi.breakinggood.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -13,8 +13,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.njagi.breakinggood.common.Error
-import com.njagi.breakinggood.common.Loading
 import com.njagi.breakinggood.models.DeathsItem
 import com.njagi.breakinggood.viewmodels.DeathState
 import com.njagi.breakinggood.viewmodels.DeathsViewModel
@@ -24,7 +22,7 @@ fun FetchDeaths(deathsViewModel: DeathsViewModel = viewModel()) {
         Row(modifier = Modifier
             .fillMaxWidth()
             .height(160.dp)) {
-        
+
         when (val state = deathsViewModel.deathState.collectAsState().value) {
             
             is DeathState.Empty -> Text(text="Nothing to see here")

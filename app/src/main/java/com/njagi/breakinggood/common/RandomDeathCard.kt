@@ -25,9 +25,9 @@ import com.njagi.breakinggood.models.DeathsItem
 fun RandomDeathCard(deathsItem: DeathsItem) {
     Card(modifier = Modifier
         .fillMaxWidth()
-        .height(180.dp), shape = RoundedCornerShape(10.dp),
+        .height(200.dp), shape = RoundedCornerShape(1.dp),
         backgroundColor = Color.LightGray,
-        border = BorderStroke(1.dp, Color.Cyan)
+        border = BorderStroke(1.dp, Color.Black)
     ) {
 
 

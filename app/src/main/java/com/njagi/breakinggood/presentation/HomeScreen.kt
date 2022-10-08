@@ -12,22 +12,27 @@ import com.njagi.breakinggood.viewmodels.CharacterState
 import com.njagi.breakinggood.viewmodels.CharacterViewModel
 import com.njagi.breakinggood.viewmodels.DeathState
 import com.njagi.breakinggood.viewmodels.DeathsViewModel
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
 
+@RootNavGraph(start = true)
+@Destination
 @Composable
 fun HomeScreen() {
-    HeaderText(text = "Random Death")
-    FetchRandomDeath()
-    HeaderText(text = "Characters")
-    FetchData(modifier = Modifier.padding(top = 2.dp))
-}
+
+        HeaderText(text = "Random Death")
+        FetchRandomDeath()
+        HeaderText(text = "Characters")
+        FetchData(modifier = Modifier.padding(top = 2.dp))
+    }
+
+
 
 @Composable
 fun FetchData(
     characterViewModel: CharacterViewModel = viewModel(),
     modifier: Modifier
 ) {
-
-    Column(modifier = Modifier.fillMaxSize()) {
         when (val state = characterViewModel.characterstate.collectAsState().value) {
             is CharacterState.Empty -> Text(text = "Nothing to see here")
 
@@ -38,17 +43,12 @@ fun FetchData(
             is CharacterState.Error -> Error(text = state.message)
         }
     }
-}
+
 
 @Composable
 fun FetchRandomDeath(
     deathsViewModel: DeathsViewModel = viewModel()
 ) {
-    Row(modifier = Modifier
-        .fillMaxWidth()
-        .padding(1.dp)
-        .height(180.dp)) {
-
         when(val state = deathsViewModel.randomdeathstate.collectAsState().value) {
 
             is DeathState.Empty -> Text(text = "Nothing to see here")
@@ -65,5 +65,5 @@ fun FetchRandomDeath(
         }
     }
 
-}
+
 
