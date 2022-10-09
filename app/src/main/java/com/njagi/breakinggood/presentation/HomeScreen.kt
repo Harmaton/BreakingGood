@@ -19,51 +19,61 @@ import com.ramcosta.composedestinations.annotation.RootNavGraph
 @Destination
 @Composable
 fun HomeScreen() {
+      Column(modifier = Modifier.fillMaxSize()){
+          AppHead()
+          Spacer(modifier = Modifier.height(10.dp))
+          HeaderText(text = "Random Death")
+          Spacer(modifier = Modifier.height(10.dp))
+          FetchRandomDeath()
+          Spacer(modifier = Modifier.height(10.dp))
+          HeaderText(text = "Characters")
+          Spacer(modifier = Modifier.height(10.dp))
+          FetchData(modifier = Modifier.padding(top = 8.dp))
+      }
 
-        HeaderText(text = "Random Death")
-        FetchRandomDeath()
-        HeaderText(text = "Characters")
-        FetchData(modifier = Modifier.padding(top = 2.dp))
+
     }
-
 
 
 @Composable
 fun FetchData(
-    characterViewModel: CharacterViewModel = viewModel(),
+    characterViewModel: CharacterViewModel= viewModel(),
     modifier: Modifier
 ) {
+
+
         when (val state = characterViewModel.characterstate.collectAsState().value) {
-            is CharacterState.Empty -> Text(text = "Nothing to see here")
+        is CharacterState.Empty -> Text(text = "Nothing to see here")
 
-            is CharacterState.Loading -> Loading(text = " ... ")
+        is CharacterState.Loading -> Loading(text = " ... ")
 
-            is CharacterState.Success -> BadCharacters(characters = state.data)
+        is CharacterState.Success -> BadCharacters(characters = state.data)
 
-            is CharacterState.Error -> Error(text = state.message)
-        }
+        is CharacterState.Error -> Error(text = state.message)
     }
+
+
+    }
+
 
 
 @Composable
 fun FetchRandomDeath(
-    deathsViewModel: DeathsViewModel = viewModel()
+    deathsViewModel: DeathsViewModel = viewModel(),
 ) {
-        when(val state = deathsViewModel.randomdeathstate.collectAsState().value) {
+    when (val state2 = deathsViewModel.randomdeathstate.collectAsState().value) {
 
-            is DeathState.Empty -> Text(text = "Nothing to see here")
+        is DeathState.Empty -> Text(text = "Nothing to see here")
 
-            is DeathState.Loading -> Loading(text = "Relax, Loading ...")
+        is DeathState.Loading -> Loading(text = "Relax, Loading ...")
 
-            is DeathState.Success2 -> RandomDeathCard(deathsItem = state.data)
+        is DeathState.Success2 -> RandomDeathCard(deathsItem = state2.data)
 
-            is DeathState.Error -> Error(text = state.message )
-
-            else -> {
-
-            }
-        }
+        is DeathState.Error -> Error(text = state2.message)
     }
+
+}
+
 
 
 

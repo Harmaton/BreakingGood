@@ -27,7 +27,7 @@ class DeathsViewModel @Inject constructor(private val deathsRepository: DeathsRe
     }
 
     private fun getRandomDeath() {
-        _randomdeathstate.value = DeathState.Loading
+       _randomdeathstate.value = DeathState.Loading
 
         viewModelScope.launch(Dispatchers.IO) {
             val randomDeathResponse = deathsRepository.getRandomDeath()
